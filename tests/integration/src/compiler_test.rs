@@ -573,7 +573,14 @@ impl CompilerTest {
         if self.vm_masm_program.is_none() {
             self.compile_wasm_to_masm_program();
         }
-        self.vm_masm_program.as_ref().unwrap().as_ref().unwrap().clone()
+        self.vm_masm_program
+            .as_ref()
+            .unwrap()
+            .as_ref()
+            .unwrap_or_else(|e| {
+                panic!("VM assembly error:\n{e}");
+            })
+            .clone()
     }
 
     /// Get the MASM source code

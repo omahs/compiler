@@ -256,7 +256,8 @@ impl<'a> OpEmitter<'a> {
     /// This operation is checked, so if the values are not valid u64, execution will trap.
     #[inline]
     pub fn lte_u64(&mut self) {
-        self.emit(Op::Exec("std::math::u64::checked_lte".parse().unwrap()));
+        // TODO: temporarily use unchecked version until https://github.com/0xPolygonMiden/compiler/issues/239 is resolved
+        self.emit(Op::Exec("::std::math::u64::lte".parse().unwrap()));
     }
 
     /// Pops two u64 values off the stack, `b` and `a`, and pushes `a > b` on the stack.
