@@ -443,6 +443,15 @@ pub enum Opcode {
     Ret,
     Unreachable,
     InlineAsm,
+    /// NOTE: Internal Use Only!
+    /// This is used during the spill pass to record spilling a value to temporary memory,
+    /// which will eventually be allocated to a local variable slot and rewritten as store.local
+    /// before that pass completes
+    Spill,
+    /// NOTE: Internal Use Only!
+    /// This is used during the spill pass to record reloading a spilled value as a new copy.
+    /// This is rewritten to a load.local before the pass completes.
+    Reload,
 }
 impl Opcode {
     pub fn is_terminator(&self) -> bool {
@@ -492,7 +501,9 @@ impl Opcode {
             | Self::Switch
             | Self::Ret
             | Self::Unreachable
-            | Self::InlineAsm => true,
+            | Self::InlineAsm
+            | Self::Spill
+            | Self::Reload => true,
             // These opcodes are not
             Self::ImmI1
             | Self::ImmU8
@@ -642,6 +653,8 @@ impl Opcode {
             Self::Ret => 1,
             // The following require no arguments
             Self::GlobalValue | Self::Alloca | Self::Unreachable | Self::InlineAsm => 0,
+            // Spills/reloads take a single argument
+            Self::Spill | Self::Reload => 1,
         }
     }
 
@@ -659,7 +672,8 @@ impl Opcode {
             | Self::CondBr
             | Self::Switch
             | Self::Ret
-            | Self::Unreachable => smallvec![],
+            | Self::Unreachable
+            | Self::Spill => smallvec![],
             // These ops have fixed result types
             Self::Test
             | Self::IsOdd
@@ -711,7 +725,8 @@ impl Opcode {
             | Self::Bxor
             | Self::Rotl
             | Self::Rotr
-            | Self::MemGrow => {
+            | Self::MemGrow
+            | Self::Reload => {
                 smallvec![ctrl_ty]
             }
             // These ops always return a usize/u32 type
@@ -813,6 +828,8 @@ impl fmt::Display for Opcode {
             Self::Max => f.write_str("max"),
             Self::Unreachable => f.write_str("unreachable"),
             Self::InlineAsm => f.write_str("asm"),
+            Self::Spill => f.write_str("spill"),
+            Self::Reload => f.write_str("reload"),
         }
     }
 }

@@ -1175,6 +1175,7 @@ impl<'a> InstTypeChecker<'a> {
             Opcode::Ret => InstPattern::Any,
             Opcode::Unreachable => InstPattern::Empty,
             Opcode::InlineAsm => InstPattern::Any,
+            Opcode::Spill | Opcode::Reload => InstPattern::Any,
         };
         Ok(Self {
             diagnostics,
