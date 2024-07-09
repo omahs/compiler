@@ -327,6 +327,10 @@ pub enum Opcode {
     ImmU64,
     /// Represents an immediate signed 64-bit integer value
     ImmI64,
+    /// Represents an immediate unsigned 128-bit integer value
+    ImmU128,
+    /// Represents an immediate signed 128-bit integer value
+    ImmI128,
     /// Represents an immediate field element
     ImmFelt,
     /// Represents an immediate 64-bit floating-point value
@@ -491,6 +495,8 @@ impl Opcode {
             | Self::ImmI32
             | Self::ImmU64
             | Self::ImmI64
+            | Self::ImmU128
+            | Self::ImmI128
             | Self::ImmFelt
             | Self::ImmF64
             | Self::GlobalValue
@@ -558,6 +564,8 @@ impl Opcode {
             | Self::ImmI32
             | Self::ImmU64
             | Self::ImmI64
+            | Self::ImmU128
+            | Self::ImmI128
             | Self::ImmFelt
             | Self::ImmF64 => 0,
             // Binary ops always have two
@@ -667,6 +675,8 @@ impl Opcode {
             | Self::ImmI32
             | Self::ImmU64
             | Self::ImmI64
+            | Self::ImmU128
+            | Self::ImmI128
             | Self::ImmFelt
             | Self::ImmF64
             | Self::GlobalValue
@@ -731,6 +741,8 @@ impl fmt::Display for Opcode {
             Self::ImmI32 => f.write_str("const.i32"),
             Self::ImmU64 => f.write_str("const.u64"),
             Self::ImmI64 => f.write_str("const.i64"),
+            Self::ImmU128 => f.write_str("const.u128"),
+            Self::ImmI128 => f.write_str("const.i128"),
             Self::ImmFelt => f.write_str("const.felt"),
             Self::ImmF64 => f.write_str("const.f64"),
             Self::GlobalValue => f.write_str("global"),

@@ -16,6 +16,21 @@ impl<'a> OpEmitter<'a> {
         self.assert_unsigned_int32()
     }
 
+    /// Push a u128 value on the operand stack
+    ///
+    /// An u128 value consists of 4 32-bit limbs
+    pub fn push_u128(&mut self, value: u128) {
+        let bytes = value.to_le_bytes();
+        let hi = u64::from_le_bytes([
+            bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
+        ]);
+        let lo = u64::from_le_bytes([
+            bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15],
+        ]);
+        self.push_u64(lo);
+        self.push_u64(hi);
+    }
+
     /// Push an i128 value on the operand stack
     ///
     /// An i128 value consists of 4 32-bit limbs
